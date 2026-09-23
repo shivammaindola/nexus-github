@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEXUS</title>
+  <link rel="stylesheet" href="jarvis-ui.css?v=8" />
+</head>
+<body>
+  <video id="video" playsinline muted hidden></video>
+  <canvas id="fx"></canvas>
+  <div id="flash"></div>
+
+  <main id="ui">
+    <!-- top-right date / time -->
+    <div class="topright">
+      <div id="date" class="date">—</div>
+      <div id="clock" class="time">--:--</div>
+    </div>
+
+    <!-- left wordmark -->
+    <div class="brand-block">
+      <h1 class="brand">N E X U S</h1>
+      <div class="brand-sub">YOUR AI COMPANION</div>
+    </div>
+
+    <!-- right verbs -->
+    <div class="verbs">
+      <span>SEES</span><span>HEARS</span><span>THINKS</span><span>ACTS</span><span class="dim">WITH YOU</span>
+      <div class="dash">—</div>
+    </div>
+
+    <!-- centre face -->
+    <section class="stage">
+      <div id="face" class="face">
+        <canvas id="faceCanvas" class="face-canvas"></canvas>
+        <img class="frame" data-f="idle" src="assets/speech_idle.png" alt="" />
+        <img class="frame" data-f="wake" src="assets/speech_wake.png" alt="" />
+        <img class="frame" data-f="start" src="assets/speak_start.png" alt="" />
+        <img class="frame" data-f="mid" src="assets/speak_mid.png" alt="" />
+        <img class="frame" data-f="continue" src="assets/speak_continue.png" alt="" />
+        <img class="frame" data-f="end" src="assets/speak_end.png" alt="" />
+      </div>
+      <div class="platform"></div>
+    </section>
+
+    <!-- bottom waveform + prompt -->
+    <div class="bottom">
+      <div class="wave" id="wave">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
+      <div id="jarvis" class="say">Say "Wake up"</div>
+      <div id="heard" class="heard"></div>
+    </div>
+
+    <!-- kept for JS, not shown -->
+    <div id="status" hidden></div>
+    <div id="you" hidden></div>
+  </main>
+
+  <div id="loader" class="hidden"></div>
+
+  <script src="jarvis-chess.js?v=12"></script>
+  <script src="jarvis-ui.js?v=30"></script>
+</body>
+</html>

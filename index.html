@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>J.A.R.V.I.S. — Elemental Hands</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="stage">
+    <!-- Live camera feed (mirrored) -->
+    <video id="video" playsinline muted></video>
+    <!-- Effects layer -->
+    <canvas id="fx"></canvas>
+    <!-- Full-screen flash used for the clap shockwave -->
+    <div id="flash"></div>
+
+    <!-- Cinematic overlays -->
+    <div id="vignette"></div>
+    <div id="scanlines"></div>
+
+    <!-- HUD -->
+    <header id="hud">
+      <div class="hud-title">
+        <span class="dot"></span>
+        J.A.R.V.I.S.
+        <span class="sub">// ELEMENTAL HANDS</span>
+      </div>
+      <div id="status" class="hud-status">SYSTEM STANDBY</div>
+    </header>
+
+    <!-- Legend -->
+    <aside id="legend" class="legend">
+      <div class="legend-row"><span class="chip fire">🔥 LEFT SIDE</span> Open that hand → flame (fist = off)</div>
+      <div class="legend-row"><span class="chip bolt">⚡ RIGHT SIDE</span> Open that hand → lightning (fist = off)</div>
+      <div class="legend-row"><span class="chip clap">👏 CLAP</span> Big explosion + shockwave</div>
+      <div class="legend-keys">Keys: <b>S</b> swap hands · <b>H</b> hide UI · <b>M</b> mute</div>
+    </aside>
+
+    <!-- Start gate -->
+    <div id="gate">
+      <div class="gate-card">
+        <h1>ELEMENTAL HANDS</h1>
+        <p>Real-time fire &amp; lightning that obey your fingers.<br />Clap to unleash a shockwave.</p>
+        <button id="startBtn">◉ ACTIVATE JARVIS</button>
+        <small>Allow camera access · Best in a dark room · Chrome recommended</small>
+      </div>
+    </div>
+
+    <div id="loader" class="hidden">
+      <div class="spinner"></div>
+      <div>CALIBRATING HAND TRACKER…</div>
+    </div>
+  </div>
+
+  <!-- MediaPipe Hands (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="app.js"></script>
+</body>
+</html>

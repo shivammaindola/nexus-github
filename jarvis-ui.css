@@ -1,0 +1,109 @@
+:root {
+  --accent: #6db6ff;
+  --accent-soft: rgba(109,182,255,0.55);
+  --text: #cfe0f2;
+  --dim: #5f7488;
+  --level: 0;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  background: radial-gradient(1200px 800px at 50% 42%, #06090f 0%, #030509 55%, #000 100%);
+  color: var(--text);
+  font-family: "SF Mono", ui-monospace, "Roboto Mono", Menlo, Consolas, monospace;
+  overflow: hidden;
+  user-select: none;
+}
+
+#fx { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.22; }
+#flash {
+  position: fixed; inset: 0; z-index: 3; opacity: 0; pointer-events: none; mix-blend-mode: screen;
+  background: radial-gradient(circle at 50% 42%, rgba(140,200,255,0.8), rgba(80,150,255,0.2) 40%, transparent 70%);
+}
+
+#ui { position: fixed; inset: 0; z-index: 5; pointer-events: none; }
+
+/* ---------- top-right date / time ---------- */
+.topright { position: absolute; top: 4.5vh; right: 4vw; text-align: right; }
+.date { font-size: 11px; letter-spacing: 4px; color: var(--dim); }
+.time { font-size: 18px; letter-spacing: 3px; color: #dcebfb; font-weight: 300; margin-top: 4px; }
+
+/* ---------- left wordmark ---------- */
+.brand-block { position: absolute; left: 6vw; top: 50%; transform: translateY(-50%); }
+.brand {
+  font-size: clamp(28px, 3vw, 44px); font-weight: 300; letter-spacing: 14px;
+  color: #eaf3ff; text-shadow: 0 0 24px rgba(109,182,255,0.35);
+}
+.brand-sub { margin-top: 12px; font-size: 11px; letter-spacing: 7px; color: var(--dim); }
+
+/* ---------- right verbs ---------- */
+.verbs { position: absolute; right: 6vw; top: 50%; transform: translateY(-55%); display: flex; flex-direction: column; gap: 9px; }
+.verbs span { font-size: 11px; letter-spacing: 6px; color: #93b2cd; }
+.verbs .dim { color: var(--dim); }
+.verbs .dash { margin-top: 10px; color: var(--dim); }
+
+/* ---------- centre face ---------- */
+.stage { position: absolute; inset: 0; display: grid; place-items: center; }
+.face {
+  position: relative;
+  width: clamp(300px, 30vw, 460px);
+  height: clamp(380px, 70vh, 660px);
+  transform: translateY(-6vh) scale(calc(1 + var(--level) * 0.02));
+  transition: transform .12s ease;
+}
+/* ---- frame-based lip sync (transparent high-res mouth sprites) ---- */
+.face .frame { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }  /* hidden preload/decoding source for the canvas */
+.face-canvas {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  -webkit-mask-image: linear-gradient(to bottom, #000 80%, transparent 99%);
+          mask-image: linear-gradient(to bottom, #000 80%, transparent 99%);
+}
+
+/* glowing platform ring under the chin */
+.platform {
+  position: absolute; left: 50%; top: calc(50% + 22vh); transform: translate(-50%, -50%);
+  width: clamp(240px, 24vw, 380px); height: clamp(44px, 5vw, 66px);
+  border-radius: 50%;
+  border-top: 2px solid rgba(150,215,255,0.85);
+  border-bottom: 1px solid rgba(120,190,255,0.15);
+  background: radial-gradient(ellipse at 50% 30%, rgba(120,200,255,0.18), transparent 62%);
+  box-shadow: 0 0 60px rgba(110,190,255,0.45), 0 -6px 40px rgba(120,200,255,0.35);
+}
+.platform::after { /* soft reflection */
+  content: ""; position: absolute; left: 50%; top: 120%; transform: translateX(-50%);
+  width: 70%; height: 40px; border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(110,190,255,0.12), transparent 70%);
+  filter: blur(6px);
+}
+
+/* ---------- bottom waveform + prompt ---------- */
+.bottom { position: absolute; left: 50%; bottom: 8vh; transform: translateX(-50%); text-align: center; }
+.wave { display: flex; align-items: center; justify-content: center; gap: 3px; height: 40px; }
+.wave i {
+  width: 2px; background: linear-gradient(180deg, var(--accent), rgba(109,182,255,0.3));
+  border-radius: 2px; height: 12%;
+  animation: wv 1.2s ease-in-out infinite;
+}
+.wave i:nth-child(odd)  { animation-duration: 0.9s; }
+.wave i:nth-child(3n)   { animation-duration: 1.5s; }
+.wave i:nth-child(4n)   { animation-duration: 0.7s; }
+@keyframes wv { 0%,100% { height: 10%; opacity:.5; } 50% { height: calc(30% + var(--level) * 140%); opacity:1; } }
+.say { margin-top: 18px; font-size: 15px; letter-spacing: 3px; color: #a7c4dd; font-weight: 300; }
+.heard {
+  margin-top: 12px; min-height: 18px; font-size: 13px; letter-spacing: 1px;
+  color: #6f97b3; font-style: italic; opacity: 0; transition: opacity .2s ease;
+}
+.heard.active { opacity: 0.95; color: #8fd0ff; }
+
+/* awake accent shift */
+html[data-awake] { --accent: #86caff; --accent-soft: rgba(134,202,255,0.65); }
+
+/* loader (unused, kept hidden) */
+#loader { display: none; }
+.hidden { display: none !important; }
+
+@media (max-width: 820px) {
+  .verbs, .brand-block { display: none; }
+}

@@ -1,0 +1,236 @@
+:root {
+  --cyan: #35e6ff;
+  --orange: #ff7a18;
+  --bg: #04060a;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: #eaffff;
+  font-family: "SF Mono", ui-monospace, "Roboto Mono", Menlo, Consolas, monospace;
+  overflow: hidden;
+  user-select: none;
+}
+
+#stage {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 40%, #0a1018 0%, #04060a 70%);
+}
+
+/* Camera feed, mirrored like a front cam */
+#video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);
+  z-index: 1;
+}
+
+/* Effects canvas sits above the video */
+#fx {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Shockwave flash */
+#flash {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.9), rgba(120,220,255,0.35) 40%, transparent 70%);
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+/* Cinematic overlays (kept minimal so the webcam stays bright) */
+#vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background: none;
+  box-shadow: none;
+}
+#scanlines {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  opacity: 0;
+  background: none;
+}
+
+/* Screen shake applied on clap */
+#stage.shake #video,
+#stage.shake #fx {
+  animation: shake 0.35s cubic-bezier(.36,.07,.19,.97);
+}
+#stage.shake #video {
+  filter: saturate(1.6) contrast(1.25) hue-rotate(8deg);
+}
+@keyframes shake {
+  0%   { transform: translate(0,0) scaleX(-1); }
+  20%  { transform: translate(-10px, 6px) scale(1.02) scaleX(-1); }
+  40%  { transform: translate(9px, -8px) scale(1.03) scaleX(-1); }
+  60%  { transform: translate(-7px, 5px) scale(1.02) scaleX(-1); }
+  80%  { transform: translate(6px, -4px) scale(1.01) scaleX(-1); }
+  100% { transform: translate(0,0) scaleX(-1); }
+}
+/* fx canvas isn't mirrored via CSS (we mirror in JS math) */
+#stage.shake #fx { transform: translate(0,0); }
+@keyframes shakeFx {
+  0%,100% { transform: translate(0,0); }
+  40% { transform: translate(6px,-6px); }
+  70% { transform: translate(-5px,4px); }
+}
+
+/* HUD */
+#hud {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  z-index: 6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 24px;
+  pointer-events: none;
+}
+.hud-title {
+  font-weight: 700;
+  letter-spacing: 4px;
+  font-size: 20px;
+  text-shadow: 0 0 12px rgba(53,230,255,0.7);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.hud-title .sub {
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: rgba(53,230,255,0.6);
+}
+.hud-title .dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 14px var(--cyan);
+  animation: pulse 1.6s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+.hud-status {
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: var(--cyan);
+  border: 1px solid rgba(53,230,255,0.3);
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: rgba(53,230,255,0.05);
+  text-shadow: 0 0 8px rgba(53,230,255,0.5);
+}
+
+/* Legend */
+.legend {
+  position: absolute;
+  left: 24px; bottom: 22px;
+  z-index: 6;
+  font-size: 12px;
+  line-height: 1.9;
+  color: #bfeef5;
+  pointer-events: none;
+  text-shadow: 0 1px 4px #000;
+}
+.legend-row { display: flex; align-items: center; gap: 10px; }
+.chip {
+  display: inline-block;
+  min-width: 96px;
+  text-align: center;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.chip.fire { background: rgba(255,122,24,0.18); color: #ffb265; border: 1px solid rgba(255,122,24,0.5); }
+.chip.bolt { background: rgba(53,230,255,0.16); color: #8fefff; border: 1px solid rgba(53,230,255,0.5); }
+.chip.clap { background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.4); }
+.legend-keys { margin-top: 8px; opacity: 0.6; font-size: 11px; }
+
+/* Start gate */
+#gate {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 50% 45%, rgba(10,20,30,0.9), rgba(2,4,8,0.98));
+  backdrop-filter: blur(4px);
+}
+.gate-card {
+  text-align: center;
+  padding: 44px 52px;
+  border: 1px solid rgba(53,230,255,0.25);
+  border-radius: 18px;
+  background: rgba(6,14,22,0.6);
+  box-shadow: 0 0 60px rgba(53,230,255,0.15), inset 0 0 40px rgba(53,230,255,0.06);
+}
+.gate-card h1 {
+  font-size: 34px;
+  letter-spacing: 8px;
+  margin-bottom: 14px;
+  text-shadow: 0 0 22px rgba(53,230,255,0.8);
+}
+.gate-card p { color: #a9d8e0; font-size: 13px; line-height: 1.7; margin-bottom: 26px; }
+#startBtn {
+  font: inherit;
+  font-size: 15px;
+  letter-spacing: 3px;
+  color: #04141a;
+  background: linear-gradient(180deg, #6ff0ff, #17c4e6);
+  border: none;
+  padding: 14px 30px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-weight: 700;
+  box-shadow: 0 0 30px rgba(53,230,255,0.6);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+#startBtn:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 0 46px rgba(53,230,255,0.9); }
+.gate-card small { display: block; margin-top: 18px; color: #6f97a0; font-size: 11px; letter-spacing: 1px; }
+
+/* Loader */
+#loader {
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+  display: grid;
+  place-items: center;
+  gap: 18px;
+  grid-auto-flow: row;
+  align-content: center;
+  color: var(--cyan);
+  letter-spacing: 3px;
+  font-size: 13px;
+  background: rgba(2,4,8,0.85);
+}
+.spinner {
+  width: 54px; height: 54px;
+  border: 3px solid rgba(53,230,255,0.15);
+  border-top-color: var(--cyan);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+  box-shadow: 0 0 24px rgba(53,230,255,0.4);
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.hidden { display: none !important; }
+.faded { opacity: 0 !important; transition: opacity .4s ease; }
